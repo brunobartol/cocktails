@@ -92,6 +92,27 @@ fileprivate enum Constants {
     static let imageSize: CGFloat = 20
 }
 
+// MARK: - Constants
+
+fileprivate struct Constants {
+    private init() {}
+    
+    static let searchIcon = "magnifyingglass"
+    static let searchLabel = "Search"
+    static let searchPrompt = "Type to search"
+    static let clearIcon = "closeButton"
+    static let filterIcon = "filterButton"
+    
+    static let spacing: CGFloat = 9
+    static let zeroPadding: CGFloat = 0
+    static let paddingSmall: CGFloat = 12
+    static let paddingMedium: CGFloat = 15
+    static let paddingLarge: CGFloat = 16
+    static let cornerRadius: CGFloat = 16
+    static let maxHeight: CGFloat = 48
+    static let imageSize: CGFloat = 20
+}
+
 #Preview {
     @FocusState var isFocused: Bool
     
