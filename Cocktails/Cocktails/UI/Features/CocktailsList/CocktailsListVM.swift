@@ -29,7 +29,9 @@ final class CocktailsListVM: ObservableObject {
                     ()
                 case .failure(_):
                     state.cocktails = []
-                    state.errorMessage = Constants.errorMessage
+                    if query.isEmpty {
+                        state.errorMessage = Constants.errorMessage
+                    }
                 }
             } receiveValue: { [weak self] result in
                 self?.state.cocktails = result.drinks.map { CocktailModel(from: $0) }
