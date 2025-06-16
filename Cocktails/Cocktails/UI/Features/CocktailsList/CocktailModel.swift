@@ -12,7 +12,7 @@ extension CocktailModel {
         self.id = dto.id
         self.imageUrl = dto.imageUrl
         self.title = dto.name
-        self.ingredients = dto.ingredients
+        self.ingredients = dto.ingredients.compactMap { $0 }.joined(separator: ", ")
         self.category = dto.category
         self.alcoholic = dto.alcoholic
     }
