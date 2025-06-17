@@ -6,6 +6,7 @@ final class CocktailDetailsVM: ObservableObject {
         var isLoading = true
         var cocktail: CocktailDetailsModel?
         var errorMessage: String?
+        var modifiedDate: String?
     }
     
     @Published var state: ViewState = ViewState()
@@ -47,15 +48,19 @@ final class CocktailDetailsVM: ObservableObject {
                 case .failure(_):
                     state.cocktail = nil
                     state.errorMessage = Constants.errorMessage
+                    state.modifiedDate = nil
                 }
             } receiveValue: { [weak self] dto in
-                self?.state.cocktail = CocktailDetailsModel(from: dto)
-                self?.state.errorMessage = nil
+                guard let self else { return }
+                
+                state.cocktail = CocktailDetailsModel(from: dto)
+                state.errorMessage = nil
+                state.modifiedDate = formatDate()
             }
             .store(in: &cancellables)
     }
     
-    func formatDate() -> String? {
+    private func formatDate() -> String? {
         guard
             let cocktail = state.cocktail,
             let dateString = cocktail.dateModified,
@@ -63,20 +68,16 @@ final class CocktailDetailsVM: ObservableObject {
             return nil
         }
         
-        let calendar = Calendar.current
-        let currentDateComponents = calendar.dateComponents([.year, .month], from: Date())
-        let dateComponents = calendar.dateComponents([.year, .month], from: date)
-        let isInThisMonth = currentDateComponents.year == dateComponents.year && currentDateComponents.month == dateComponents.month
-        
-        return isInThisMonth ? Constants.thisMonthDate : displayDateFormatter.string(from: date)
+        return DateHelper.formatLastModifiedDate(date)
     }
 }
+
+// MARK: - Constants
 
 fileprivate struct Constants {
     private init() {}
     
     static let errorMessage = "Oops! Something went wrong..."
-    static let thisMonthDate = "This month"
     static let parseDateFormat: String = "yyyy-MM-dd HH:mm:ss"
     static let displayDateFormat: String = "dd-MM-yyyy"
 }

@@ -15,8 +15,7 @@ struct IngredientsSection: View {
             ForEach(0..<ingredients.count, id: \.self) { index in
                 Group {
                     if let measure = measures[index], let ingredient = ingredients[index] {
-                        Text(Constants.bullet) +
-                        Text("\(measure) \(ingredient)")
+                        Text(Constants.bullet) + Text("\(measure) \(ingredient)")
                     }
                 }
                 .appFont(size: Constants.fontSizeBody, foregroundColor: .ocean)

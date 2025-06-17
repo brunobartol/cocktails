@@ -1,8 +1,13 @@
+import Combine
 import SwiftUI
 import UIKit
 
 final class Coordinator {
-    weak var navigationController: UINavigationController?
+    private weak var navigationController: UINavigationController?
+    private let cocktailsListService: CocktailsListServiceProtocol = CocktailsListService()
+    private let cocktailsDetailsService: CocktailDetailsServiceProtocol = CocktailDetailsService()
+    private let randomCocktailService: RandomCocktailServiceProtocol = RandomCocktailService()
+    private(set) var cancellables = Set<AnyCancellable>()
     
     init(navigationController: UINavigationController?) {
         self.navigationController = navigationController
@@ -27,18 +32,32 @@ final class Coordinator {
     func start() {
         guard let navigationController = navigationController else { return }
         
-        let rootView = CocktailsListView(viewModel: CocktailsListVM(service: CocktailsListService(), onDetailsTap: { [weak self] id in
+        let viewModel = CocktailsListVM(service: cocktailsListService)
+        let rootView = CocktailsListView(viewModel: viewModel, onDetailsTapped: { [weak self] id in
             self?.showCocktailDetails(id)
-        }))
+        }, onFeelingLuckyButtonTapped: { [weak self] in
+            self?.showRandomCocktailDetails()
+        })
         let viewController = UIHostingController(rootView: rootView)
         navigationController.pushViewController(viewController, animated: true)
     }
     
-    func showCocktailDetails(_ id: String) {
+    private func showCocktailDetails(_ id: String) {
         guard let navigationController = navigationController else { return }
         
-        let viewModel = CocktailDetailsVM(id: id, service: CocktailDetailsService())
+        let viewModel = CocktailDetailsVM(id: id, service: cocktailsDetailsService)
         let viewController = UIHostingController(rootView: CocktailDetailsView(viewModel: viewModel))
         navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    private func showRandomCocktailDetails() {
+        randomCocktailService.fetchRandom()
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                ()
+            } receiveValue: { [weak self] dto in
+                self?.showCocktailDetails(dto.id)
+            }
+            .store(in: &cancellables)
     }
 }

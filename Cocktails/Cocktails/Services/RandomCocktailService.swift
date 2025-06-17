@@ -1,27 +1,24 @@
 import Combine
-import Foundation
 
-// MARK: - Cocktails list service protocol
+// MARK: - Random cocktail serivice protocol
 
-protocol CocktailDetailsServiceProtocol {
-    func fetchCocktailDetails(_ id: String) -> AnyPublisher<CocktailDTO, ApiError>
+protocol RandomCocktailServiceProtocol {
+    func fetchRandom() -> AnyPublisher<CocktailDTO, ApiError>
 }
 
 // MARK: - Implementation
 
-final class CocktailDetailsService: CocktailDetailsServiceProtocol {
-    func fetchCocktailDetails(_ id: String) -> AnyPublisher<CocktailDTO, ApiError> {
+final class RandomCocktailService: RandomCocktailServiceProtocol {
+    func fetchRandom() -> AnyPublisher<CocktailDTO, ApiError> {
         return NetworkManager.shared
-            .request(Endpoint.cocktailDetails(id).url, decodableType: CocktailsListResponseDTO.self)
+            .request(Endpoint.randomCocktail.url, decodableType: CocktailsListResponseDTO.self)
             .tryCompactMap { $0.drinks.first }
             .mapError { _ in return ApiError.emptyData }
             .eraseToAnyPublisher()
     }
 }
 
-// MARK: - Mock implementation for testing
-
-final class MockCocktailDetailsService: CocktailDetailsServiceProtocol {
+final class MockRandomCocktailService: RandomCocktailServiceProtocol {
     private let mockCocktail = CocktailDTO(id: "1100",
                                            name: "Mojito",
                                            category: "Cocktail",
@@ -31,7 +28,7 @@ final class MockCocktailDetailsService: CocktailDetailsServiceProtocol {
                                            glass: "Highball glass",
                                            dateModified: "2016-11-04 09:17:09")
     
-    func fetchCocktailDetails(_ id: String) -> AnyPublisher<CocktailDTO, ApiError> {
+    func fetchRandom() -> AnyPublisher<CocktailDTO, ApiError> {
         Future<CocktailDTO, ApiError> { [weak self] promise in
             guard let self else { return }
             
