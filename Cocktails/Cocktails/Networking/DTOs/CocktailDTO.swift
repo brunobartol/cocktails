@@ -12,7 +12,6 @@ struct CocktailDTO {
     var ingredients: [String?] = []
     var measures: [String?] = []
     
-    
     enum CodingKeys: String, CodingKey {
         case id = "idDrink"
         case name = "strDrink"

@@ -9,7 +9,10 @@ struct HeaderItem: View {
     var body: some View {
         VStack(spacing: Constants.spacing) {
             Image(image)
+                .resizable()
+                .scaledToFit()
                 .frame(width: Constants.imageSize, height: Constants.imageSize)
+            
             Text(title)
                 .appFont(size: Constants.fontSize, foregroundColor: .ocean)
         }
@@ -32,6 +35,7 @@ struct Header: View {
             HeaderItem(image: Constants.alcoholicImage, title: alcoholicType)
                 .frame(maxWidth: .infinity)
         }
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 }
 
@@ -47,6 +51,7 @@ fileprivate struct Constants {
     static let spacing: CGFloat = 5
     static let imageSize: CGFloat = 47
     static let fontSize: CGFloat = 14
+    static let horizontalPadding: CGFloat = 20
 }
 
 // MARK: - Preview

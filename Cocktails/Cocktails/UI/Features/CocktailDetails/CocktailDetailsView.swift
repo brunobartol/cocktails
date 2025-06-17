@@ -55,7 +55,7 @@ struct CocktailDetailsView: View {
                         
                         divider
                         
-                        LastModifiedFooter(date: viewModel.formatDate())
+                        LastModifiedFooter(date: viewModel.state.modifiedDate)
                     }
                 }
                 .padding(.top, Constants.padding)
@@ -76,6 +76,8 @@ struct CocktailDetailsView: View {
     }
 }
 
+// MARK: - Constants
+
 fileprivate struct Constants {
     private init() {}
     
@@ -89,6 +91,8 @@ fileprivate struct Constants {
     static let cornerRadius: CGFloat = 40
     static let contentRatio: CGFloat = 0.7
 }
+
+// MARK: - Preview
 
 #Preview {
     CocktailDetailsView(viewModel: CocktailDetailsVM(id: "1100", service: MockCocktailDetailsService()))
