@@ -31,10 +31,10 @@ final class CocktailDetailsVM: ObservableObject {
         self.id = id
         self.service = service
         
-        fetchData(id)
+        fetchData()
     }
     
-    private func fetchData(_ id: String) {
+    private func fetchData() {
         service.fetchCocktailDetails(id)
             .receive(on: RunLoop.main)
             .sink { [weak self] completion in
