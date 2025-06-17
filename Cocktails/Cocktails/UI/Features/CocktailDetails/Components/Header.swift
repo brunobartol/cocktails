@@ -37,6 +37,7 @@ struct Header: View {
             HeaderItem(image: Constants.alcoholicImage, title: alcoholicType)
                 .frame(maxWidth: .infinity)
         }
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 }
 
