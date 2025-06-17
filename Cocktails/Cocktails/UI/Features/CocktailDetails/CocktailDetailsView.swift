@@ -39,23 +39,26 @@ struct CocktailDetailsView: View {
                     .padding(.leading, Constants.padding)
                 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: Constants.spacing) {
+                    VStack(spacing: Constants.spacing) {
                         Header(category: viewModel.state.cocktail?.category ?? "",
                                glass: viewModel.state.cocktail?.glass ?? "",
                                alcoholicType: viewModel.state.cocktail?.alcoholic ?? "")
                         
                         divider
                         
-                        IngredientsSection(ingredients: viewModel.state.cocktail?.ingredients ?? [],
-                                           measures: viewModel.state.cocktail?.measures ?? [])
-                        
-                        divider
-                        
-                        DirectionsSection(instructions: viewModel.state.cocktail?.instructions ?? "")
-                        
-                        divider
-                        
-                        LastModifiedFooter(date: viewModel.state.modifiedDate)
+                        VStack(alignment: .leading) {
+                            IngredientsSection(ingredients: viewModel.state.cocktail?.ingredients ?? [],
+                                               measures: viewModel.state.cocktail?.measures ?? [])
+                            
+                            divider
+                            
+                            DirectionsSection(instructions: viewModel.state.cocktail?.instructions ?? "")
+                            
+                            divider
+                            
+                            LastModifiedFooter(date: viewModel.state.modifiedDate)
+                        }
+                        .padding(.horizontal, Constants.padding)
                     }
                 }
                 .padding(.top, Constants.padding)
