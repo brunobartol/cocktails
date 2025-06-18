@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AppFont: ViewModifier {
+private struct AppFont: ViewModifier {
     let size: CGFloat
     let foregroundColor: Color
     let weight: Font.Weight

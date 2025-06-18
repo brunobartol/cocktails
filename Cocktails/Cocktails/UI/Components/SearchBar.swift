@@ -6,61 +6,76 @@ struct SearchBar: View {
     
     var body: some View {
         HStack {
-            HStack(spacing: Constants.spacing) {
-                Image(systemName: Constants.searchIcon)
-                    .padding(.leading, Constants.paddingSmall)
-                
-                TextField(Constants.searchLabel,
-                          text: $text,
-                          prompt: Text(isFocused ? Constants.searchPrompt : Constants.searchLabel))
-                .textInputAutocapitalization(.never)
-                .disableAutocorrection(true)
-                .focused($isFocused, equals: true)
-                
-                if !text.isEmpty {
-                    Button(action: clearSearch, label: {
-                        Image(Constants.clearIcon)
-                            .resizable()
-                            .scaledToFit()
-                    })
-                    .buttonStyle(.plain)
-                    .frame(width: Constants.imageSize, height: Constants.imageSize)
-                    .padding(EdgeInsets(top: Constants.paddingLarge,
-                                        leading: Constants.zeroPadding,
-                                        bottom: Constants.paddingSmall,
-                                        trailing: Constants.paddingMedium))
-                }
-            }
-            .frame(maxHeight: Constants.maxHeight)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+            search
+            filter
+        }
+    }
+}
+
+// MARK: - View components -
+
+private extension SearchBar {
+    // MARK: - Search -
+    
+    private var search: some View {
+        HStack(spacing: Constants.spacing) {
+            Image(systemName: Constants.searchIcon)
+                .padding(.leading, Constants.paddingSmall)
             
-            // filter
-            if !isFocused && text.isEmpty {
-                Button(action: {
-                    // TODO: filter
-                }, label: {
-                    Image(Constants.filterIcon)
+            TextField(Constants.searchLabel,
+                      text: $text,
+                      prompt: Text(isFocused ? Constants.searchPrompt : Constants.searchLabel))
+            .textInputAutocapitalization(.never)
+            .disableAutocorrection(true)
+            .focused($isFocused)
+            
+            if !text.isEmpty {
+                Button(action: clearSearch, label: {
+                    Image(Constants.clearIcon)
+                        .renderingMode(.original)
+                        .resizable()
+                        .scaledToFit()
                 })
                 .buttonStyle(.plain)
-                .padding(EdgeInsets(top: Constants.paddingSmall,
-                                    leading: Constants.paddingMedium,
+                .frame(width: Constants.imageSize, height: Constants.imageSize)
+                .padding(EdgeInsets(top: Constants.paddingLarge,
+                                    leading: Constants.zeroPadding,
                                     bottom: Constants.paddingSmall,
-                                    trailing: Constants.zeroPadding))
+                                    trailing: Constants.paddingMedium))
             }
         }
+        .frame(maxHeight: Constants.maxHeight)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
     }
     
     private func clearSearch() {
         text = ""
     }
+    
+    // MARK: - Filter -
+    
+    @ViewBuilder
+    private var filter: some View {
+        if !isFocused && text.isEmpty {
+            Button(action: {
+                // TODO: filter
+            }, label: {
+                Image(Constants.filterIcon)
+                    .renderingMode(.original)
+            })
+            .buttonStyle(.plain)
+            .padding(EdgeInsets(top: Constants.paddingSmall,
+                                leading: Constants.paddingMedium,
+                                bottom: Constants.paddingSmall,
+                                trailing: Constants.zeroPadding))
+        }
+    }
 }
 
-// MARK: - Constants
+// MARK: - Constants -
 
-fileprivate struct Constants {
-    private init() {}
-    
+fileprivate enum Constants {
     static let searchIcon = "magnifyingglass"
     static let searchLabel = "Search"
     static let searchPrompt = "Type to search"

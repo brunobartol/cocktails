@@ -16,11 +16,9 @@ extension ButtonStyle where Self == PrimaryButtonStyle {
     static var primaryButton: PrimaryButtonStyle { .init() }
 }
 
-// MARK: - Constants
+// MARK: - Constants -
 
-fileprivate struct Constants {
-    private init() {}
-    
+fileprivate enum Constants {
     static let verticalPadding: CGFloat = 12
     static let horizontalPadding: CGFloat = 60
     static let fontSize: CGFloat = 16
