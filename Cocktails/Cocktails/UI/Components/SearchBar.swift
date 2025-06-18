@@ -1,8 +1,17 @@
 import SwiftUI
 
 struct SearchBar: View {
-    @Binding var text: String
-    @FocusState.Binding var isFocused: Bool
+    @Binding private var text: String
+    @FocusState.Binding private var isFocused: Bool
+    private let onFilterTapped: () -> Void
+    
+    init(text: Binding<String>,
+         isFocused: FocusState<Bool>.Binding,
+         onFilterTapped: @escaping () -> Void) {
+        self._text = text
+        self._isFocused = isFocused
+        self.onFilterTapped = onFilterTapped
+    }
     
     var body: some View {
         HStack {
@@ -97,8 +106,8 @@ fileprivate enum Constants {
     
     VStack(spacing: 20) {
         Spacer()
-        SearchBar(text: .constant("test"), isFocused: $isFocused)
-        SearchBar(text: .constant(""), isFocused: $isFocused)
+        SearchBar(text: .constant("test"), isFocused: $isFocused, onFilterTapped: {})
+        SearchBar(text: .constant(""), isFocused: $isFocused, onFilterTapped: {})
         Spacer()
     }
     .padding(.horizontal, 20)
