@@ -92,11 +92,9 @@ fileprivate enum Constants {
     static let imageSize: CGFloat = 20
 }
 
-// MARK: - Constants
+// MARK: - Constants -
 
-fileprivate struct Constants {
-    private init() {}
-    
+fileprivate enum Constants {
     static let searchIcon = "magnifyingglass"
     static let searchLabel = "Search"
     static let searchPrompt = "Type to search"
