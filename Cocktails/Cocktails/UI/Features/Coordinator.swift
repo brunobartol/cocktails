@@ -36,6 +36,8 @@ final class Coordinator {
             self?.showCocktailDetails(id)
         }, onFeelingLuckyTap: { [weak self] in
             self?.showRandomCocktailDetails()
+        }, onFilterTapped: { [weak self] in
+            self?.showFilter()
         })
         let rootView = CocktailList(viewModel: viewModel)
         let viewController = UIHostingController(rootView: rootView)
@@ -57,5 +59,13 @@ final class Coordinator {
                 self?.showCocktailDetails(dto.id)
             }
             .store(in: &cancellables)
+    }
+    
+    private func showFilter() {
+        guard let navigationController = navigationController else { return }
+        
+        let viewModel = CocktailsFilterVM(filterService: CocktailsFilterService())
+        let viewController = UIHostingController(rootView: CocktailsFilterView(viewModel: viewModel))
+        navigationController.pushViewController(viewController, animated: true)
     }
 }
