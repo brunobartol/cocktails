@@ -16,9 +16,7 @@ final class NetworkManager: NetworkManagerProtocol {
     
     func request<T: Decodable>(_ urlString: String, decodableType: T.Type) -> AnyPublisher<T, ApiError> {
         guard let url = URL(string: urlString) else {
-            return Future<T, ApiError> { promise in
-                return promise(.failure(ApiError.invalidURL))
-            }.eraseToAnyPublisher()
+            return Fail(error: ApiError.invalidURL).eraseToAnyPublisher()
         }
         let request = URLRequest(url: url)
         return URLSession.DataTaskPublisher(request: request, session: .shared)

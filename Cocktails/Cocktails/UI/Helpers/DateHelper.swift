@@ -3,7 +3,25 @@ import Foundation
 // MARK: - Date Helper
 
 struct DateHelper {
-    static func formatLastModifiedDate(_ date: Date) -> String {
+    private static var parseDateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = Constants.parseDateFormat
+        return formatter
+    }
+    
+    private static var displayDateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = Constants.displayDateFormat
+        return formatter
+    }
+    
+    static func formatLastModifiedDate(_ dateString: String?) -> String? {
+        guard
+            let dateStr = dateString,
+            let date = parseDateFormatter.date(from: dateStr) else {
+            return nil
+        }
+        
         let calendar = Calendar.current
         
         let isCurrentYear = calendar.isDate(date, equalTo: .now, toGranularity: .year)
@@ -23,11 +41,11 @@ struct DateHelper {
 
 // MARK: - Constants
 
-fileprivate struct Constants {
-    private init() {}
-    
+fileprivate enum Constants {
     static let todayString: String = "Today"
     static let thisWeekString: String = "This week"
     static let thisMonthString: String = "This month"
     static let thisYearString: String = "This year"
+    static let parseDateFormat: String = "yyyy-MM-dd HH:mm:ss"
+    static let displayDateFormat: String = "dd-MM-yyyy"
 }
