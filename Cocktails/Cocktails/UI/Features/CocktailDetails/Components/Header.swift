@@ -9,12 +9,14 @@ struct HeaderItem: View {
     var body: some View {
         VStack(spacing: Constants.spacing) {
             Image(image)
+                .renderingMode(.original)
                 .resizable()
                 .scaledToFit()
                 .frame(width: Constants.imageSize, height: Constants.imageSize)
             
             Text(title)
                 .appFont(size: Constants.fontSize, foregroundColor: .ocean)
+                .multilineTextAlignment(.center)
         }
     }
 }
@@ -27,7 +29,7 @@ struct Header: View {
     let alcoholicType: String
     
     var body: some View {
-        HStack {
+        HStack(alignment: .top) {
             HeaderItem(image: Constants.categoryImage, title: category)
                 .frame(maxWidth: .infinity)
             HeaderItem(image: Constants.glassImage, title: glass)
@@ -35,7 +37,6 @@ struct Header: View {
             HeaderItem(image: Constants.alcoholicImage, title: alcoholicType)
                 .frame(maxWidth: .infinity)
         }
-        .padding(.horizontal, Constants.horizontalPadding)
     }
 }
 

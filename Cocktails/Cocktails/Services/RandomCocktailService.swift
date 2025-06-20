@@ -13,7 +13,13 @@ final class RandomCocktailService: RandomCocktailServiceProtocol {
         return NetworkManager.shared
             .request(Endpoint.randomCocktail.url, decodableType: CocktailsListResponseDTO.self)
             .tryCompactMap { $0.drinks.first }
-            .mapError { _ in return ApiError.emptyData }
+            .mapError { error in
+                guard let apiError = error as? ApiError else {
+                    return ApiError.emptyData
+                }
+                
+                return apiError
+            }
             .eraseToAnyPublisher()
     }
 }

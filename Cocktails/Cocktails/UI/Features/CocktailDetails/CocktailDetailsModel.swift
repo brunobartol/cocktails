@@ -24,6 +24,6 @@ extension CocktailDetailsModel {
         self.glass = dto.glass
         self.ingredients = dto.ingredients
         self.measures = dto.measures
-        self.dateModified = dto.dateModified
+        self.dateModified = DateHelper.formatLastModifiedDate(dto.dateModified)
     }
 }

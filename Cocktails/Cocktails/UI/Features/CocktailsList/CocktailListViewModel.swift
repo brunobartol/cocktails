@@ -2,6 +2,9 @@ import Combine
 import SwiftUI
 
 final class CocktailListViewModel: ObservableObject {
+    private let service: CocktailsListServiceProtocol
+    private(set) var cancellables = Set<AnyCancellable>()
+    
     enum ViewState {
         case success(cocktails: [CocktailModel])
         case error(message: String?)
@@ -9,12 +12,16 @@ final class CocktailListViewModel: ObservableObject {
     
     @Published var state = ViewState.success(cocktails: [])
     @Published var searchText = ""
+    let onDetailsTap: (String) -> Void
+    let onFeelingLuckyTap: () -> Void
     
-    private let service: CocktailsListServiceProtocol
-    private(set) var cancellables = Set<AnyCancellable>()
-    
-    init(service: CocktailsListServiceProtocol) {
+    init(service: CocktailsListServiceProtocol,
+         onDetailsTap: @escaping (String) -> Void,
+         onFeelingLuckyTap: @escaping () -> Void
+    ) {
         self.service = service
+        self.onDetailsTap = onDetailsTap
+        self.onFeelingLuckyTap = onFeelingLuckyTap
         
         setupSearchTextBinding()
     }
@@ -37,7 +44,6 @@ final class CocktailListViewModel: ObservableObject {
             .receive(on: RunLoop.main)
             .sink { [weak self] cocktails in
                 self?.state = .success(cocktails: cocktails.drinks.map { CocktailModel(from: $0) })
-                
             }
             .store(in: &cancellables)
     }

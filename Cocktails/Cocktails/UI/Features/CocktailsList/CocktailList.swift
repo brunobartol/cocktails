@@ -22,9 +22,10 @@ struct CocktailList: View {
             
             feelingLuckyButton
         }
-        .onTapGesture {
-            isSearchFocused = false
-        }
+        .simultaneousGesture(
+            TapGesture().onEnded { isSearchFocused = false }
+        )
+        .toolbarVisibility(.hidden, for: .navigationBar)
     }
 }
 
@@ -53,9 +54,14 @@ private extension CocktailList {
         if case .success(let cocktails) = viewModel.state {
             List {
                 ForEach(cocktails) { cocktail in
-                    CocktailCard(imageUrl: cocktail.imageUrl,
-                                 title: cocktail.title,
-                                 ingredients: cocktail.ingredients)
+                    Button(action: {
+                        viewModel.onDetailsTap(cocktail.id)
+                    }, label: {
+                        CocktailCard(imageUrl: cocktail.imageUrl,
+                                         title: cocktail.title,
+                                         ingredients: cocktail.ingredients)
+                    })
+                    .buttonStyle(.plain)
                     .alignmentGuide(.listRowSeparatorLeading) {
                         $0[.leading]
                     }
@@ -69,9 +75,7 @@ private extension CocktailList {
     }
     
     private var feelingLuckyButton: some View {
-        Button(action: {
-            // TODO: show random
-        }, label: {
+        Button(action: viewModel.onFeelingLuckyTap, label: {
             Text(Constants.buttonTitle)
         })
         .buttonStyle(.primaryButton)
@@ -95,6 +99,7 @@ fileprivate enum Constants {
 
 #Preview {
     NavigationStack {
-        CocktailList(viewModel: CocktailListViewModel(service: CocktailsListService()))
+        CocktailList(viewModel: CocktailListViewModel(service: CocktailsListService(), onDetailsTap: { _ in
+        }, onFeelingLuckyTap: {}))
     }
 }

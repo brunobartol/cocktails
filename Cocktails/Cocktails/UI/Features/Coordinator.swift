@@ -3,15 +3,17 @@ import SwiftUI
 import UIKit
 
 final class Coordinator {
-    private weak var navigationController: UINavigationController?
+    private let navigationController: UINavigationController = UINavigationController()
     private let cocktailsListService: CocktailsListServiceProtocol = CocktailsListService()
     private let cocktailsDetailsService: CocktailDetailsServiceProtocol = CocktailDetailsService()
     private let randomCocktailService: RandomCocktailServiceProtocol = RandomCocktailService()
     private(set) var cancellables = Set<AnyCancellable>()
     
-    init(navigationController: UINavigationController?) {
-        self.navigationController = navigationController
-        
+    lazy var rootViewController: UIViewController = {
+        navigationController
+    }()
+    
+    init() {
         setupNavigationBar()
     }
     
@@ -19,34 +21,30 @@ final class Coordinator {
         let navigationBarAppearance = UINavigationBarAppearance()
         navigationBarAppearance.configureWithDefaultBackground()
         
-        self.navigationController?.navigationItem.standardAppearance = navigationBarAppearance
-        self.navigationController?.navigationItem.compactAppearance = navigationBarAppearance
-        self.navigationController?.navigationItem.scrollEdgeAppearance = navigationBarAppearance
+        self.navigationController.navigationItem.standardAppearance = navigationBarAppearance
+        self.navigationController.navigationItem.compactAppearance = navigationBarAppearance
+        self.navigationController.navigationItem.scrollEdgeAppearance = navigationBarAppearance
         
         let backButton = UIImage(named: "backButton")?.withTintColor(.white, renderingMode: .alwaysOriginal)
-        self.navigationController?.navigationBar.tintColor = .clear
-        self.navigationController?.navigationBar.backIndicatorImage = backButton
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backButton
+        self.navigationController.navigationBar.tintColor = .clear
+        self.navigationController.navigationBar.backIndicatorImage = backButton
+        self.navigationController.navigationBar.backIndicatorTransitionMaskImage = backButton
     }
     
     func start() {
-        guard let navigationController = navigationController else { return }
-        
-        let viewModel = CocktailsListVM(service: cocktailsListService)
-        let rootView = CocktailsListView(viewModel: viewModel, onDetailsTapped: { [weak self] id in
+        let viewModel = CocktailListViewModel(service: cocktailsListService, onDetailsTap: { [weak self] id in
             self?.showCocktailDetails(id)
-        }, onFeelingLuckyButtonTapped: { [weak self] in
+        }, onFeelingLuckyTap: { [weak self] in
             self?.showRandomCocktailDetails()
         })
+        let rootView = CocktailList(viewModel: viewModel)
         let viewController = UIHostingController(rootView: rootView)
         navigationController.pushViewController(viewController, animated: true)
     }
     
     private func showCocktailDetails(_ id: String) {
-        guard let navigationController = navigationController else { return }
-        
-        let viewModel = CocktailDetailsVM(id: id, service: cocktailsDetailsService)
-        let viewController = UIHostingController(rootView: CocktailDetailsView(viewModel: viewModel))
+        let viewModel = CocktailDetailsViewModel(id: id, service: cocktailsDetailsService)
+        let viewController = UIHostingController(rootView: CocktailDetails(viewModel: viewModel))
         navigationController.pushViewController(viewController, animated: true)
     }
     
