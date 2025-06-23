@@ -12,7 +12,6 @@ final class CocktailListViewModelTests: XCTestCase {
     func testSearchSuccessWithFullName() {
         // Given
         let viewModel = CocktailListViewModel(service: MockCocktailsListService(),
-                                              onDetailsTap: { _ in },
                                               onFeelingLuckyTap: {})
         let expectation = expectation(description: "Cocktail list contains Mojito and it has all the data.")
         
@@ -45,7 +44,6 @@ final class CocktailListViewModelTests: XCTestCase {
     func testSearchWithEmptyQuery() {
         // Given
         let viewModel = CocktailListViewModel(service: MockCocktailsListService(),
-                                              onDetailsTap: { _ in },
                                               onFeelingLuckyTap: {})
         let expectation = expectation(description: "Cocktails list is empty.")
         
@@ -69,7 +67,6 @@ final class CocktailListViewModelTests: XCTestCase {
     func testSearchWithOneLetterQuery() {
         // Given
         let viewModel = CocktailListViewModel(service: MockCocktailsListService(),
-                                              onDetailsTap: { _ in },
                                               onFeelingLuckyTap: {})
         let expectation = expectation(description: "Cocktails list has 2 results - all cocktails contain 'L' in the title.")
         
