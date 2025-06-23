@@ -43,9 +43,7 @@ final class CocktailsFilterViewModel: ObservableObject {
             .catch({ error in
                 Just(([], [], []))
             })
-            .sink { _ in
-                ()
-            } receiveValue: { [weak self] (categoriesFilters, glassesFilters, alcoholicTypesFilters) in
+            .sink(receiveValue: { [weak self] (categoriesFilters, glassesFilters, alcoholicTypesFilters) in
                 guard let self else { return }
                 
                 let categories = categoriesFilters.map { Filter(type: .category, value: $0.category) }
@@ -54,7 +52,7 @@ final class CocktailsFilterViewModel: ObservableObject {
                 let allFilters = categories + glasses + alcoholicTypes
                 
                 state = .success(filterModel: CocktailsFilterModel(allFilters: allFilters, filteredSearch: []))
-            }
+            })
             .store(in: &cancellables)
     }
     
