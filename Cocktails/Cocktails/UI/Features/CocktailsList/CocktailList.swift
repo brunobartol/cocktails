@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - Cocktail list -
 
 struct CocktailList: View {
+    @EnvironmentObject private var router: Router
     @ObservedObject private var viewModel: CocktailListViewModel
     @FocusState private var isSearchFocused: Bool
     
@@ -35,7 +36,7 @@ private extension CocktailList {
     private var search: some View {
         SearchBar(text: $viewModel.searchText,
                   isFocused: $isSearchFocused,
-                  onFilterTap: viewModel.onFilterTap)
+                  onFilterTap: { router.navigate(to: .filter) })
         .padding(.horizontal, Constants.paddingMedium)
         .padding(.bottom, Constants.paddingSmall)
         .background(Color.sky)
@@ -54,7 +55,9 @@ private extension CocktailList {
     @ViewBuilder
     private var list: some View {
         if case .success(let cocktails) = viewModel.state {
-            CocktailsListComponent(cocktails: cocktails, onDetailsTap: viewModel.onDetailsTap)
+            CocktailsListComponent(cocktails: cocktails, onDetailsTap: { id in
+                router.navigate(to: .cocktailDetails(id))
+            })
         }
     }
     
@@ -84,8 +87,6 @@ fileprivate enum Constants {
 #Preview {
     NavigationStack {
         CocktailList(viewModel: CocktailListViewModel(service: CocktailsListService(),
-                                                      onDetailsTap: { _ in },
-                                                      onFeelingLuckyTap: {},
-                                                      onFilterTap: {}))
+                                                      onFeelingLuckyTap: {}))
     }
 }

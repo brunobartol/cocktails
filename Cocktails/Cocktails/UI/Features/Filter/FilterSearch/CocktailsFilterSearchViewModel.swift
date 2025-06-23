@@ -13,14 +13,11 @@ final class CocktailsFilterSearchViewModel: ObservableObject {
     }
     
     @Published var state: ViewState = .loading
-    let onDetailsTap: (_ id: String) -> Void
     
     init(filteredIds: [String],
-         listService: CocktailsListServiceProtocol,
-         onDetailsTap: @escaping (String) -> Void) {
+         listService: CocktailsListServiceProtocol) {
         self.filteredIds = filteredIds
         self.listService = listService
-        self.onDetailsTap = onDetailsTap
         
         fetchCocktails()
     }

@@ -8,6 +8,7 @@ final class Coordinator {
     private let cocktailsDetailsService: CocktailDetailsServiceProtocol = CocktailDetailsService()
     private let randomCocktailService: RandomCocktailServiceProtocol = RandomCocktailService()
     private let cocktailFilterService: CocktailsFilterServiceProtocol = CocktailsFilterService()
+    private let router = Router()
     private(set) var cancellables = Set<AnyCancellable>()
     
     private lazy var cocktailsFilterViewModel: CocktailsFilterViewModel = {
@@ -21,6 +22,7 @@ final class Coordinator {
     init() {
         setupNavigationBar()
         setupFilterBinding()
+        setupRouterBinding()
     }
     
     private func setupNavigationBar() {
@@ -38,22 +40,10 @@ final class Coordinator {
         self.navigationController.navigationItem.scrollEdgeAppearance = navigationBarAppearance
     }
     
-    func start() {
-        let viewModel = CocktailListViewModel(service: cocktailsListService, onDetailsTap: { [weak self] id in
-            self?.showCocktailDetails(id)
-        }, onFeelingLuckyTap: { [weak self] in
-            self?.showRandomCocktailDetails()
-        }, onFilterTap: { [weak self] in
-            self?.showFilter()
-        })
-        let rootView = CocktailList(viewModel: viewModel)
-        let viewController = UIHostingController(rootView: rootView)
-        navigationController.pushViewController(viewController, animated: true)
-    }
-    
     private func showCocktailDetails(_ id: String) {
         let viewModel = CocktailDetailsViewModel(id: id, service: cocktailsDetailsService)
-        let viewController = UIHostingController(rootView: CocktailDetails(viewModel: viewModel))
+        let view = CocktailDetails(viewModel: viewModel).environmentObject(router)
+        let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: true)
     }
     
@@ -63,13 +53,14 @@ final class Coordinator {
             .sink { _ in
                 ()
             } receiveValue: { [weak self] dto in
-                self?.showCocktailDetails(dto.id)
+                self?.router.navigate(to: .cocktailDetails(dto.id))
             }
             .store(in: &cancellables)
     }
     
     private func showFilter() {
-        let viewController = UIHostingController(rootView: CocktailsFilter(viewModel: cocktailsFilterViewModel))
+        let view = CocktailsFilter(viewModel: cocktailsFilterViewModel).environmentObject(router)
+        let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: true)
     }
     
@@ -78,17 +69,51 @@ final class Coordinator {
             .receive(on: RunLoop.main)
             .sink { [weak self] state in
                 if case .search(let results) = state {
-                    self?.showFilteredSearch(results)
+                    self?.router.navigate(to: .filteredCocktailList(results))
                 }
             }
             .store(in: &cancellables)
     }
     
     private func showFilteredSearch(_ filteredIds: [String]) {
-        let viewModel = CocktailsFilterSearchViewModel(filteredIds: filteredIds, listService: cocktailsListService, onDetailsTap: { [weak self] id in
-            self?.showCocktailDetails(id)
-        })
-        let viewController = UIHostingController(rootView: CocktailsFilterSearch(viewModel: viewModel))
+        let viewModel = CocktailsFilterSearchViewModel(filteredIds: filteredIds, listService: cocktailsListService)
+        let view = CocktailsFilterSearch(viewModel: viewModel).environmentObject(router)
+        let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    private func setupRouterBinding() {
+        router.$currentRoute
+            .receive(on: RunLoop.main)
+            .sink { [weak self] route in
+                guard let self else { return }
+                
+                switch route {
+                case .cocktailList:
+                    start()
+                case .cocktailDetails(let id):
+                    showCocktailDetails(id)
+                case .filter:
+                    showFilter()
+                case .filteredCocktailList(let filteredIds):
+                    showFilteredSearch(filteredIds)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func start() {
+        let viewModel = CocktailListViewModel(service: cocktailsListService, onFeelingLuckyTap: { [weak self] in
+            self?.showRandomCocktailDetails()
+        })
+        let rootView = CocktailList(viewModel: viewModel).environmentObject(router)
+        let viewController = UIHostingController(rootView: rootView)
+        
+        if navigationController.viewControllers.isEmpty {
+            navigationController.pushViewController(viewController, animated: true)
+            return
+        }
+        
+        navigationController.popToRootViewController(animated: true)
     }
 }

@@ -3,7 +3,7 @@ import Combine
 
 struct CocktailsFilterSearch: View {
     @ObservedObject private var viewModel: CocktailsFilterSearchViewModel
-    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var router: Router
     
     init(viewModel: CocktailsFilterSearchViewModel) {
         self.viewModel = viewModel
@@ -21,7 +21,7 @@ struct CocktailsFilterSearch: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
-                    dismiss()
+                    router.navigate(to: .cocktailList)
                 }, label: {
                     Image("backButton")
                         .renderingMode(.original)
@@ -37,7 +37,9 @@ private extension CocktailsFilterSearch {
     @ViewBuilder
     private var list: some View {
         if case .success(let cocktails) = viewModel.state {
-            CocktailsListComponent(cocktails: cocktails, onDetailsTap: viewModel.onDetailsTap)
+            CocktailsListComponent(cocktails: cocktails, onDetailsTap: { id in
+                router.navigate(to: .cocktailDetails(id))
+            })
         }
     }
     
