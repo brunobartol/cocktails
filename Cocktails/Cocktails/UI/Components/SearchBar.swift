@@ -3,14 +3,14 @@ import SwiftUI
 struct SearchBar: View {
     @Binding private var text: String
     @FocusState.Binding private var isFocused: Bool
-    private let onFilterTapped: () -> Void
+    private let onFilterTap: () -> Void
     
     init(text: Binding<String>,
          isFocused: FocusState<Bool>.Binding,
-         onFilterTapped: @escaping () -> Void) {
+         onFilterTap: @escaping () -> Void) {
         self._text = text
         self._isFocused = isFocused
-        self.onFilterTapped = onFilterTapped
+        self.onFilterTap = onFilterTap
     }
     
     var body: some View {
@@ -67,9 +67,7 @@ private extension SearchBar {
     @ViewBuilder
     private var filter: some View {
         if !isFocused && text.isEmpty {
-            Button(action: {
-                // TODO: filter
-            }, label: {
+            Button(action: onFilterTap, label: {
                 Image(Constants.filterIcon)
                     .renderingMode(.original)
             })
@@ -106,8 +104,8 @@ fileprivate enum Constants {
     
     VStack(spacing: 20) {
         Spacer()
-        SearchBar(text: .constant("test"), isFocused: $isFocused, onFilterTapped: {})
-        SearchBar(text: .constant(""), isFocused: $isFocused, onFilterTapped: {})
+        SearchBar(text: .constant("test"), isFocused: $isFocused, onFilterTap: {})
+        SearchBar(text: .constant(""), isFocused: $isFocused, onFilterTap: {})
         Spacer()
     }
     .padding(.horizontal, 20)

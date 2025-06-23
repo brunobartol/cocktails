@@ -14,14 +14,17 @@ final class CocktailListViewModel: ObservableObject {
     @Published var searchText = ""
     let onDetailsTap: (String) -> Void
     let onFeelingLuckyTap: () -> Void
+    let onFilterTap: () -> Void
     
     init(service: CocktailsListServiceProtocol,
          onDetailsTap: @escaping (String) -> Void,
-         onFeelingLuckyTap: @escaping () -> Void
+         onFeelingLuckyTap: @escaping () -> Void,
+         onFilterTap: @escaping () -> Void
     ) {
         self.service = service
         self.onDetailsTap = onDetailsTap
         self.onFeelingLuckyTap = onFeelingLuckyTap
+        self.onFilterTap = onFilterTap
         
         setupSearchTextBinding()
     }
