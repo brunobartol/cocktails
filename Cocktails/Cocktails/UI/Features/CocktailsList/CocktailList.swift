@@ -33,11 +33,13 @@ struct CocktailList: View {
 
 private extension CocktailList {
     private var search: some View {
-        SearchBar(text: $viewModel.searchText, isFocused: $isSearchFocused)
-            .padding(.horizontal, Constants.paddingMedium)
-            .padding(.bottom, Constants.paddingSmall)
-            .background(Color.sky)
-            .shadow(color: .black.opacity(Constants.opacity), radius: Constants.radius, y: Constants.shadowYAxis)
+        SearchBar(text: $viewModel.searchText,
+                  isFocused: $isSearchFocused,
+                  onFilterTap: viewModel.onFilterTap)
+        .padding(.horizontal, Constants.paddingMedium)
+        .padding(.bottom, Constants.paddingSmall)
+        .background(Color.sky)
+        .shadow(color: .black.opacity(Constants.opacity), radius: Constants.radius, y: Constants.shadowYAxis)
     }
     
     @ViewBuilder
@@ -52,25 +54,7 @@ private extension CocktailList {
     @ViewBuilder
     private var list: some View {
         if case .success(let cocktails) = viewModel.state {
-            List {
-                ForEach(cocktails) { cocktail in
-                    Button(action: {
-                        viewModel.onDetailsTap(cocktail.id)
-                    }, label: {
-                        CocktailCard(imageUrl: cocktail.imageUrl,
-                                         title: cocktail.title,
-                                         ingredients: cocktail.ingredients)
-                    })
-                    .buttonStyle(.plain)
-                    .alignmentGuide(.listRowSeparatorLeading) {
-                        $0[.leading]
-                    }
-                    .alignmentGuide(.listRowSeparatorTrailing) {
-                        $0[.trailing]
-                    }
-                }
-            }
-            .listStyle(.plain)
+            CocktailsListComponent(cocktails: cocktails, onDetailsTap: viewModel.onDetailsTap)
         }
     }
     
@@ -99,7 +83,9 @@ fileprivate enum Constants {
 
 #Preview {
     NavigationStack {
-        CocktailList(viewModel: CocktailListViewModel(service: CocktailsListService(), onDetailsTap: { _ in
-        }, onFeelingLuckyTap: {}))
+        CocktailList(viewModel: CocktailListViewModel(service: CocktailsListService(),
+                                                      onDetailsTap: { _ in },
+                                                      onFeelingLuckyTap: {},
+                                                      onFilterTap: {}))
     }
 }
