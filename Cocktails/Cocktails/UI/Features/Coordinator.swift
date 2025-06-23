@@ -7,7 +7,12 @@ final class Coordinator {
     private let cocktailsListService: CocktailsListServiceProtocol = CocktailsListService()
     private let cocktailsDetailsService: CocktailDetailsServiceProtocol = CocktailDetailsService()
     private let randomCocktailService: RandomCocktailServiceProtocol = RandomCocktailService()
+    private let cocktailFilterService: CocktailsFilterServiceProtocol = CocktailsFilterService()
     private(set) var cancellables = Set<AnyCancellable>()
+    
+    private lazy var cocktailsFilterViewModel: CocktailsFilterViewModel = {
+        CocktailsFilterViewModel(filterService: cocktailFilterService)
+    }()
     
     lazy var rootViewController: UIViewController = {
         navigationController
@@ -15,20 +20,22 @@ final class Coordinator {
     
     init() {
         setupNavigationBar()
+        setupFilterBinding()
     }
     
     private func setupNavigationBar() {
+        self.navigationController.navigationBar.barTintColor = .clear
+        self.navigationController.navigationBar.tintColor = .white
+        
         let navigationBarAppearance = UINavigationBarAppearance()
         navigationBarAppearance.configureWithDefaultBackground()
+        
+        let backButton = UIImage(named: "backButton")?.withTintColor(.white, renderingMode: .alwaysTemplate)
+        navigationBarAppearance.setBackIndicatorImage(backButton, transitionMaskImage: backButton)
         
         self.navigationController.navigationItem.standardAppearance = navigationBarAppearance
         self.navigationController.navigationItem.compactAppearance = navigationBarAppearance
         self.navigationController.navigationItem.scrollEdgeAppearance = navigationBarAppearance
-        
-        let backButton = UIImage(named: "backButton")?.withTintColor(.white, renderingMode: .alwaysOriginal)
-        self.navigationController.navigationBar.tintColor = .clear
-        self.navigationController.navigationBar.backIndicatorImage = backButton
-        self.navigationController.navigationBar.backIndicatorTransitionMaskImage = backButton
     }
     
     func start() {
@@ -36,7 +43,7 @@ final class Coordinator {
             self?.showCocktailDetails(id)
         }, onFeelingLuckyTap: { [weak self] in
             self?.showRandomCocktailDetails()
-        }, onFilterTapped: { [weak self] in
+        }, onFilterTap: { [weak self] in
             self?.showFilter()
         })
         let rootView = CocktailList(viewModel: viewModel)
@@ -62,10 +69,26 @@ final class Coordinator {
     }
     
     private func showFilter() {
-        guard let navigationController = navigationController else { return }
-        
-        let viewModel = CocktailsFilterVM(filterService: CocktailsFilterService())
-        let viewController = UIHostingController(rootView: CocktailsFilterView(viewModel: viewModel))
+        let viewController = UIHostingController(rootView: CocktailsFilter(viewModel: cocktailsFilterViewModel))
+        navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    private func setupFilterBinding() {
+        cocktailsFilterViewModel.$state
+            .receive(on: RunLoop.main)
+            .sink { [weak self] state in
+                if case .search(let results) = state {
+                    self?.showFilteredSearch(results)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func showFilteredSearch(_ filteredIds: [String]) {
+        let viewModel = CocktailsFilterSearchViewModel(filteredIds: filteredIds, listService: cocktailsListService, onDetailsTap: { [weak self] id in
+            self?.showCocktailDetails(id)
+        })
+        let viewController = UIHostingController(rootView: CocktailsFilterSearch(viewModel: viewModel))
         navigationController.pushViewController(viewController, animated: true)
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CocktailDetails: View {
     @ObservedObject private var viewModel: CocktailDetailsViewModel
+    @Environment(\.dismiss) private var dismiss
     
     init(viewModel: CocktailDetailsViewModel) {
         self.viewModel = viewModel
@@ -23,6 +24,17 @@ struct CocktailDetails: View {
         }
         .ignoresSafeArea(edges: .top)
         .toolbarVisibility(.visible, for: .navigationBar)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }, label: {
+                    Image("backButton")
+                        .renderingMode(.original)
+                })
+            }
+        }
     }
 }
 
