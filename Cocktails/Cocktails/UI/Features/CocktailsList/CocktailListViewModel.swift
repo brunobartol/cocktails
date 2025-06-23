@@ -12,19 +12,11 @@ final class CocktailListViewModel: ObservableObject {
     
     @Published var state = ViewState.success(cocktails: [])
     @Published var searchText = ""
-    let onDetailsTap: (String) -> Void
     let onFeelingLuckyTap: () -> Void
-    let onFilterTap: () -> Void
     
-    init(service: CocktailsListServiceProtocol,
-         onDetailsTap: @escaping (String) -> Void,
-         onFeelingLuckyTap: @escaping () -> Void,
-         onFilterTap: @escaping () -> Void
-    ) {
+    init(service: CocktailsListServiceProtocol, onFeelingLuckyTap: @escaping () -> Void) {
         self.service = service
-        self.onDetailsTap = onDetailsTap
         self.onFeelingLuckyTap = onFeelingLuckyTap
-        self.onFilterTap = onFilterTap
         
         setupSearchTextBinding()
     }

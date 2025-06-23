@@ -32,6 +32,7 @@ final class CocktailsFilterViewModel: ObservableObject {
     
     func fetchFilters() {
         state = .loading
+        resetFilters()
         
         let categoriesPublisher = filterService.fetchCategoriesFilterList()
         let glassesPublisher = filterService.fetchGlassesFilterList()
