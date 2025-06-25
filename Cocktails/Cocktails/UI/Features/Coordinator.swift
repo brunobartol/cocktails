@@ -30,14 +30,17 @@ final class Coordinator {
         self.navigationController.navigationBar.tintColor = .white
         
         let navigationBarAppearance = UINavigationBarAppearance()
-        navigationBarAppearance.configureWithDefaultBackground()
+        navigationBarAppearance.configureWithTransparentBackground()
+        
+        navigationBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         
         let backButton = UIImage(named: "backButton")?.withTintColor(.white, renderingMode: .alwaysTemplate)
         navigationBarAppearance.setBackIndicatorImage(backButton, transitionMaskImage: backButton)
         
-        self.navigationController.navigationItem.standardAppearance = navigationBarAppearance
-        self.navigationController.navigationItem.compactAppearance = navigationBarAppearance
-        self.navigationController.navigationItem.scrollEdgeAppearance = navigationBarAppearance
+        self.navigationController.navigationBar.standardAppearance = navigationBarAppearance
+        self.navigationController.navigationBar.compactAppearance = navigationBarAppearance
+        self.navigationController.navigationBar.scrollEdgeAppearance = navigationBarAppearance
     }
     
     private func showCocktailDetails(_ id: String) {

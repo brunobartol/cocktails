@@ -23,19 +23,13 @@ struct CocktailsFilter: View {
                 
                 spinner
                 
-                Button(action: viewModel.search, label: {
-                    Text("Search")
-                        .frame(maxWidth: .infinity)
-                })
-                .buttonStyle(.primaryButton)
-                .padding(.horizontal, Constants.horizontalPadding)
+                searchButton
             }
         }
         .toolbarVisibility(.visible, for: .navigationBar)
         .toolbarBackgroundVisibility(.visible, for: .navigationBar)
         .toolbarBackground(Color.sky, for: .navigationBar)
         .navigationBarBackButtonHidden()
-        .navigationTitle(Constants.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -45,6 +39,13 @@ struct CocktailsFilter: View {
                     Image("backButton")
                         .renderingMode(.original)
                 })
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text(Constants.navigationTitle)
+                    .appFont(size: Constants.fontSizeTitle,
+                             foregroundColor: .white,
+                             weight: .bold)
             }
             
             ToolbarItem(placement: .topBarTrailing) {
@@ -116,6 +117,15 @@ private extension CocktailsFilter {
             ProgressView()
         }
     }
+    
+    private var searchButton: some View {
+        Button(action: viewModel.search, label: {
+            Text(Constants.searchButtonTitle)
+                .frame(maxWidth: .infinity)
+        })
+        .buttonStyle(.primaryButton)
+        .padding(.horizontal, Constants.horizontalPadding)
+    }
 }
 
 // MARK: - Constants -
@@ -128,6 +138,7 @@ fileprivate struct Constants {
     static let glassesTitle = "Glass:"
     static let alcoholicTypesTitle = "Alcohol:"
     static let resetButtonTitle = "Reset"
+    static let searchButtonTitle = "Search"
     
     enum Spacing {
         static let spacingSmall: CGFloat = 10

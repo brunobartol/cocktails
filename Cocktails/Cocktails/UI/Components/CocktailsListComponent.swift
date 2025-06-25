@@ -24,7 +24,6 @@ struct CocktailsListComponent: View {
             }
         }
         .listStyle(.plain)
-        .padding(.horizontal, Constants.padding)
     }
 }
 

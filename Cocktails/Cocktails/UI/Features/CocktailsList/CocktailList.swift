@@ -58,6 +58,7 @@ private extension CocktailList {
             CocktailsListComponent(cocktails: cocktails, onDetailsTap: { id in
                 router.navigate(to: .cocktailDetails(id))
             })
+            .padding(.horizontal, Constants.paddingMedium)
         }
     }
     
