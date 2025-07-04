@@ -1,10 +1,16 @@
+import Foundation
+
 struct CocktailDTO {
     let id: String
     let name: String
     let category: String
     let alcoholic: String
     let imageUrl: String
-    var ingredients: String?
+    let instructions: String
+    let glass: String
+    let dateModified: String?
+    var ingredients: [String?] = []
+    var measures: [String?] = []
     
     enum CodingKeys: String, CodingKey {
         case id = "idDrink"
@@ -27,6 +33,24 @@ struct CocktailDTO {
         case ingredient13 = "strIngredient13"
         case ingredient14 = "strIngredient14"
         case ingredient15 = "strIngredient15"
+        case measure1 = "strMeasure1"
+        case measure2 = "strMeasure2"
+        case measure3 = "strMeasure3"
+        case measure4 = "strMeasure4"
+        case measure5 = "strMeasure5"
+        case measure6 = "strMeasure6"
+        case measure7 = "strMeasure7"
+        case measure8 = "strMeasure8"
+        case measure9 = "strMeasure9"
+        case measure10 = "strMeasure10"
+        case measure11 = "strMeasure11"
+        case measure12 = "strMeasure12"
+        case measure13 = "strMeasure13"
+        case measure14 = "strMeasure14"
+        case measure15 = "strMeasure15"
+        case instructions = "strInstructions"
+        case glass = "strGlass"
+        case dateModified
     }
 }
 
@@ -38,10 +62,15 @@ extension CocktailDTO: Decodable {
         self.category = try container.decode(String.self, forKey: .category)
         self.imageUrl = try container.decode(String.self, forKey: .imageUrl)
         self.alcoholic = try container.decode(String.self, forKey: .alcoholic)
+        self.instructions = try container.decode(String.self, forKey: .instructions)
+        self.glass = try container.decode(String.self, forKey: .glass)
+        self.dateModified = try container.decodeIfPresent(String.self, forKey: .dateModified)
+        
         self.ingredients = try mapIngredients(for: container)
+        self.measures = try mapMeasures(for: container)
     }
     
-    private func mapIngredients(for container: KeyedDecodingContainer<CodingKeys>) throws -> String {
+    private func mapIngredients(for container: KeyedDecodingContainer<CodingKeys>) throws -> [String?] {
         let ingredient1: String? = try container.decodeIfPresent(String.self, forKey: .ingredient1)
         let ingredient2: String? = try container.decodeIfPresent(String.self, forKey: .ingredient2)
         let ingredient3: String? = try container.decodeIfPresent(String.self, forKey: .ingredient3)
@@ -58,7 +87,7 @@ extension CocktailDTO: Decodable {
         let ingredient14: String? = try container.decodeIfPresent(String.self, forKey: .ingredient14)
         let ingredient15: String? = try container.decodeIfPresent(String.self, forKey: .ingredient15)
         
-        let allIngredients = [
+        return [
             ingredient1,
             ingredient2,
             ingredient3,
@@ -74,8 +103,42 @@ extension CocktailDTO: Decodable {
             ingredient13,
             ingredient14,
             ingredient15
-        ].compactMap { $0 }
+        ]
+    }
+    
+    private func mapMeasures(for container: KeyedDecodingContainer<CodingKeys>) throws -> [String?] {
+        let measure1: String? = try container.decodeIfPresent(String.self, forKey: .measure1)
+        let measure2: String? = try container.decodeIfPresent(String.self, forKey: .measure2)
+        let measure3: String? = try container.decodeIfPresent(String.self, forKey: .measure3)
+        let measure4: String? = try container.decodeIfPresent(String.self, forKey: .measure4)
+        let measure5: String? = try container.decodeIfPresent(String.self, forKey: .measure5)
+        let measure6: String? = try container.decodeIfPresent(String.self, forKey: .measure6)
+        let measure7: String? = try container.decodeIfPresent(String.self, forKey: .measure7)
+        let measure8: String? = try container.decodeIfPresent(String.self, forKey: .measure8)
+        let measure9: String? = try container.decodeIfPresent(String.self, forKey: .measure9)
+        let measure10: String? = try container.decodeIfPresent(String.self, forKey: .measure10)
+        let measure11: String? = try container.decodeIfPresent(String.self, forKey: .measure11)
+        let measure12: String? = try container.decodeIfPresent(String.self, forKey: .measure12)
+        let measure13: String? = try container.decodeIfPresent(String.self, forKey: .measure13)
+        let measure14: String? = try container.decodeIfPresent(String.self, forKey: .measure14)
+        let measure15: String? = try container.decodeIfPresent(String.self, forKey: .measure15)
         
-        return allIngredients.joined(separator: ", ")
+        return [
+            measure1,
+            measure2,
+            measure3,
+            measure4,
+            measure5,
+            measure6,
+            measure7,
+            measure8,
+            measure9,
+            measure10,
+            measure11,
+            measure12,
+            measure13,
+            measure14,
+            measure15
+        ]
     }
 }
