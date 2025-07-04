@@ -80,9 +80,7 @@ private extension CocktailList {
 
 // MARK: - Constants -
 
-fileprivate struct Constants {
-    private init() {}
-    
+fileprivate enum Constants {
     static let buttonTitle = "FEELING LUCKY"
     
     static let zeroSpacing: CGFloat = 0
